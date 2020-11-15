@@ -114,11 +114,18 @@ def core(key):
                 
             
             #End meeting at the end time
-    wait_delta = datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")
-    wait_timer = int(str(wait_delta).split(":")[0]) * 3600 + int(str(wait_delta).split(":")[1]) * 60 + int(str(wait_delta).split(":")[2])
-    print("Waiting until the end of the meeting in: ", wait_timer, "Sec")
-    time.sleep(wait_timer)
-    obj.bot.close()
+    try:
+        wait_delta = datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")
+        wait_timer = int(str(wait_delta).split(":")[0]) * 3600 + int(str(wait_delta).split(":")[1]) * 60 + int(str(wait_delta).split(":")[2])
+        print("Waiting until the end of the meeting in: ", wait_timer, "Sec")
+        time.sleep(wait_timer)
+        obj.bot.close()
+    except:
+        wait_delta = datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S") - datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S")
+        wait_timer = int(str(wait_delta).split(":")[0]) * 3600 + int(str(wait_delta).split(":")[1]) * 60 + int(str(wait_delta).split(":")[2])
+        print("Waiting until the end of the meeting in: ", wait_timer, "Sec")
+        time.sleep(wait_timer)
+        obj.bot.close()
 
     #Close script after the final meeting
     wait_delta = datetime.strptime(time_asc[-1].split(",")[0], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")
@@ -159,10 +166,19 @@ for i in range(0, len(time_asc)):
         
         try:
             tdelta = datetime.strptime(time_asc[i].split(",")[0], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")
-            if "day" in str(tdelta).split(",")[0]:
+            print(tdelta)
+            meeting_duration = int(str(datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(time_asc[i].split(",")[0], "%H:%M:%S")).split(":")[0]) * 3600 + int(str(datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(time_asc[i].split(",")[0], "%H:%M:%S")).split(":")[1]) * 60 + int(str(datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(time_asc[i].split(",")[0], "%H:%M:%S")).split(":")[2])
+            print(meeting_duration)
+            resume_time = int(str(datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")).split(":")[0]) * 3600 + int(str(datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")).split(":")[1]) * 60 + int(str(datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")).split(":")[2])
+            print(resume_time)
+            print(resume_time < meeting_duration)
+            if resume_time < meeting_duration:
+                print("Resuming meeting ", schedule[int(str(time_asc[i]).split(",")[1])][0])
+                main()
+            elif "day" in str(tdelta).split(",")[0]:
                 print("The meeting ",schedule[int(str(time_asc[i]).split(",")[1])][0], " may be in 24 Hr according to the schedule")
             else:
-                wait_time = int(str(tdelta).split(":")[0]) * 3600 + int(str(tdelta).split(":")[1]) * 60 + int(str(tdelta).split(":")[2]) - 60
+                wait_time = int(str(tdelta).split(":")[0]) * 3600 + int(str(tdelta).split(":")[1]) * 60 + int(str(tdelta).split(":")[2])
                 if int(wait_time/3600):
                     print(f"Meeting starts in {int(wait_time/3600)} Hrs {int(wait_time/60 - int(wait_time/3600) * 60)} Min......")
                 elif int(wait_time/60 - int(wait_time/3600) * 60):
@@ -173,5 +189,5 @@ for i in range(0, len(time_asc)):
                 time.sleep(wait_time)
                 main()
 
-        except:
-            print("Error")
+        except Exception as e:
+            print(e)
