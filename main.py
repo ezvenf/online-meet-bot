@@ -10,15 +10,15 @@ import psutil as psutil
 import sys
 import platform
 
-print("Application Version: V1.0")
+#Instructions
+# Download a compatible chrome driver at https://sites.google.com/a/chromium.org/chromedriver/downloads
+# !important, check the chrome browser version with the chrome driver on the website!
+# Place the driver into the root of the project folder
 
 #Add your email and password here
 #Required: Turn off Gmail 2-Factor Authentication
-email = "ezvenf" # <= Your Gmail email
-passwrd = "Ezv@708915"# <= Your password
-#Instructions
-# Download a compatible chrome driver at https://sites.google.com/a/chromium.org/chromedriver/downloads
-# Place the driver into the root of the project folder
+email = "email" # <= Your Gmail email
+passwrd = "password"# <= Your password
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
@@ -44,10 +44,6 @@ options.add_experimental_option("prefs", { \
     "profile.default_content_setting_values.notifications": 2
     })
 
-
-
-# Add Speed Optimization
-# Add detection
 def has_connection(driver):
     print("Checking connection...")
     try:
@@ -137,24 +133,11 @@ def core(key):
 
 def main():
     print("Logging into meet.google.com/" + str(schedule[int(time_asc[i].split(",")[1])][0]))
-                    # Main Function : core
     core(schedule[int(time_asc[i].split(",")[1])][0])
-    # for i in range(0, len(time_asc)):
-    #     if not i%2 == 0:
-    #         try:
-    #             if int(str(datetime.strptime(schedule[int(time_asc[i].split(",")[1])][2], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")).split(":")[0]) * 3600 + int(str(datetime.strptime(schedule[int(time_asc[i].split(",")[1])][2], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")).split(":")[1]) * 60 + int(str(datetime.strptime(schedule[int(time_asc[i].split(",")[1])][2], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")).split(":")[2]) <= int(str(datetime.strptime(schedule[int(time_asc[i].split(",")[1])][2], "%H:%M:%S") - datetime.strptime(schedule[int(time_asc[i].split(",")[1])][1], "%H:%M:%S")).split(":")[0]) * 3600 + int(str(datetime.strptime(schedule[int(time_asc[i].split(",")[1])][2], "%H:%M:%S") - datetime.strptime(schedule[int(time_asc[i].split(",")[1])][1], "%H:%M:%S")).split(":")[1]) * 60 + int(str(datetime.strptime(schedule[int(time_asc[i].split(",")[1])][2], "%H:%M:%S") - datetime.strptime(schedule[int(time_asc[i].split(",")[1])][1], "%H:%M:%S")).split(":")[2]):
-    #                 print("Logging into meet.google.com/" + str(schedule[int(time_asc[i].split(",")[1])][0]))
-    #                 # Main Function : core
-    #                 core(schedule[int(time_asc[i].split(",")[1])][0])
-
-    #         except Exception as e:
-    #             print(e)
-
 
 #Collect time sequence
 time_asc = []
 for i in range(0, len(schedule)):
-    #                   schedule , list index
     time_asc.append(f"{schedule[i][1]},{i}")
     time_asc.append(f"{schedule[i][2]},{i}")
 time_asc.sort()
@@ -166,12 +149,8 @@ for i in range(0, len(time_asc)):
         
         try:
             tdelta = datetime.strptime(time_asc[i].split(",")[0], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")
-            print(tdelta)
             meeting_duration = int(str(datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(time_asc[i].split(",")[0], "%H:%M:%S")).split(":")[0]) * 3600 + int(str(datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(time_asc[i].split(",")[0], "%H:%M:%S")).split(":")[1]) * 60 + int(str(datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(time_asc[i].split(",")[0], "%H:%M:%S")).split(":")[2])
-            print(meeting_duration)
             resume_time = int(str(datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")).split(":")[0]) * 3600 + int(str(datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")).split(":")[1]) * 60 + int(str(datetime.strptime(time_asc[i+1].split(",")[0], "%H:%M:%S") - datetime.strptime(datetime.now().time().strftime("%H:%M:%S"), "%H:%M:%S")).split(":")[2])
-            print(resume_time)
-            print(resume_time < meeting_duration)
             if resume_time < meeting_duration:
                 print("Resuming meeting ", schedule[int(str(time_asc[i]).split(",")[1])][0])
                 main()
