@@ -4,15 +4,13 @@ from selenium.webdriver.common.keys import Keys
 from datetime import datetime
 import time
 import os
-import keyboard
 from schedule import schedule
-import psutil as psutil
 import sys
 import platform
 
 #Instructions
-# Download a compatible chrome driver at https://sites.google.com/a/chromium.org/chromedriver/downloads
 # !important, check the chrome browser version with the chrome driver on the website!
+# Download a compatible chrome driver at https://sites.google.com/a/chromium.org/chromedriver/downloads
 # Place the driver into the root of the project folder
 
 #Add your email and password here
@@ -71,15 +69,16 @@ class meet_bot:
             bot.find_element_by_id("next").click()
         
         try:
-            time.sleep(5)
+            time.sleep(2)
             bot.find_element_by_name("password").send_keys(passwrd)
             bot.find_element_by_id("passwordNext").click()
-        except Exception as e:
-            print(f"Error: {e}")
-            print("Terminating Session and Restarting script....")
-            bot.quit()
-            print("Restarting program.....")
-            os.system("python3 main.py")
+        except:
+            bot.find_element_by_id("password").send_keys(passwrd)
+            bot.find_element_by_id("submit").click()
+            # print("Terminating Session and Restarting script....")
+            # bot.quit()
+            # print("Restarting program.....")
+            # os.system("python3 main.py")
         
             
 
@@ -87,10 +86,41 @@ class meet_bot:
         
     def class_init(self):
         bot = self.bot
-        dismiss_notification = bot.find_element_by_xpath("/html/body/div/div[3]/div/div[2]/div[3]/div/span/span")
-        dismiss_notification.click()
+        try:
+            print("notification")
+            dismiss_notification = bot.find_element_by_xpath("/html/body/div/div[3]/div/div[2]/div[3]/div/span/span")
+            dismiss_notification.click()
+        except:
+            print("Clicking")
+            dismiss = bot.find_element_by_class_name("XAUpld")
+            dismiss.click()
+        finally:
+            pass
+            # bot.find_element_by_xpath("/html/body/div[1]/div[3]/div/div[2]/div[2]/div[1]/div/span/span/svg").click()
+        print("Sleeping for 10 sec")
         time.sleep(10)
-        bot.find_element_by_xpath("/html/body/div[1]/c-wiz/div/div/div[8]/div[3]/div/div/div[2]/div/div[1]/div[2]/div/div[2]/div/div[1]/div[1]/span/span").click()
+        try:
+            print("Attempt 1")
+            bot.find_element_by_xpath("/html/body/div[1]/c-wiz/div/div/div[8]/div[3]/div/div/div[2]/div/div[1]/div[2]/div/div[2]/div/div[1]/div[1]/span/span").click()
+        except Exception as e:
+            print(e)
+        try:
+            print('try')
+            
+            bot.find_element_by_xpath("/html/body/div[1]/c-wiz/div/div/div[8]/div[3]/div/div/div[2]/div/div[1]/div[1]/div[1]/div/div[4]/div[2]/div/div").click()
+        except:
+            time.sleep(5)
+            print("Except")
+            try:
+                bot.find_element_by_xpath("/html/body/div[1]/c-wiz/div/div/div[8]/div[3]/div/div/div[2]/div/div[1]/div[1]/div[1]/div/div[4]/div[2]/div/div").click()
+            except:
+                pass
+        finally:
+            pass
+        try:
+            bot.find_element_by_xpath("/html/body/div[1]/c-wiz/div/div/div[8]/div[3]/div/div/div[2]/div/div[1]/div[2]/div/div[2]/div/div[1]/div[1]/span/span").click()
+        except Exception as e:
+            print(e)
 
 def core(key):
     obj = meet_bot()
